@@ -1,19 +1,35 @@
 package main
 
 import (
-	"fmt"
+	"log"
 	"net/http"
+	"github.com/TobiasMolinero/personal_finances/internal/config"
+	"github.com/TobiasMolinero/personal_finances/internal/database"
+	"github.com/joho/godotenv"
 )
 
 func main() {
+	if err := godotenv.Load(); err != nil {
+		log.Fatal("Error loading .env");
+	}
+
+	cfg := config.Load();
+
+	db, err := database.Connect(cfg);
+	if err != nil {
+		log.Fatal(err);
+	}
+	defer db.Close();
+
+	log.Println("Database connected succesfully");
+
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintln(w, "Financial App API")
+		w.Write([]byte("Personal Finances API"))
 	})
 
-	fmt.Println("Server running on http://localhost:8080")
+	log.Println("Server running on http://localhost:8080");
 
-	err := http.ListenAndServe(":8080", nil)
-	if err != nil {
-		fmt.Println(err)
+	if err := http.ListenAndServe(":8080", nil); err != nil {
+		log.Fatal(err);
 	}
 }
