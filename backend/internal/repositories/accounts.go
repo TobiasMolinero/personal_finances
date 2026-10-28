@@ -25,7 +25,7 @@ func NewAccountRepository(db *sql.DB) *AccountRepository {
 	}
 }
 
-func (r *AccountRepository) create(account Account) (int64, error) {
+func (r *AccountRepository) Create(account Account) (int64, error) {
 	var id int64
 
 	query := `
